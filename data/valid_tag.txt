@@ -1,0 +1,5 @@
+﻿/B-SS /O+ /B-MAJ /I-MAJ /I-MAJ /O /B-NNG /O+ /B-VCP /O+ /B-EF /I-EF /I-EF /O+ /B-SF
+/B-NP /I-NP /O+ /B-VCP /O+ /B-EF /I-EF /I-EF /O+ /B-SF
+/B-MAJ /I-MAJ /I-MAJ /O /B-VA /I-VA /I-VA /O+ /B-ETM /O /B-NNG /I-NNG /O+ /B-JX /O /B-NNG /I-NNG /O+ /B-JKB /O /B-XR /I-XR /O+ /B-XSA /O+ /B-EP /O+ /B-EC /I-EC /O+ /B-SP /O /B-NNG /I-NNG /O+ /B-NNG /I-NNG /O+ /B-JX /O /B-MAG /I-MAG /O /B-NNG /I-NNG /O /B-NNG /O+ /B-JKB /I-JKB /O /B-VA /I-VA /O+ /B-EC /O /B-NNG /I-NNG /O+ /B-XSV /O+ /B-EC /O /B-VX /O+ /B-EP /O+ /B-EF /O+ /B-SF
+/B-NP /O+ /B-XSN /O+ /B-JKG /O /B-VA /I-VA /O+ /B-ETM /O /B-NNG /O+ /B-JKO /O /B-VV /O+ /B-EC /O /B-NNG /I-NNG /O+ /B-JX /O /B-NNG /I-NNG /I-NNG /O+ /B-JKO /O /B-VV /I-VV /I-VV /O+ /B-EP /O+ /B-EF /O+ /B-SF
+/B-NNG /I-NNG /O+ /B-XR /I-XR /O+ /B-XSA /O+ /B-ETM /O /B-NNG /I-NNG /I-NNG /I-NNG /O+ /B-JKO /O /B-VV /O+ /B-EC /O /B-VV /O+ /B-ETM /O /B-NNB /I-NNB /O+ /B-SF
