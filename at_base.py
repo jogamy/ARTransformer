@@ -1,5 +1,3 @@
-from cmath import inf
-from json import encoder
 import torch
 import torch.nn as nn
 from torch.nn import CrossEntropyLoss
@@ -8,6 +6,7 @@ import math
 from typing import Optional, Tuple
 import numpy as np
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +49,9 @@ def _make_causal_mask(input_ids_shape: torch.Size, dtype: torch.dtype, past_key_
     """
     Make causal mask used for bi-directional self-attention.
     """
+    
     bsz, tgt_len = input_ids_shape
+
     mask = torch.full((tgt_len, tgt_len), float("-inf"))
 
     mask_cond = torch.arange(mask.size(-1))
@@ -229,18 +230,6 @@ class Attention(nn.Module):
 
         attn_output = self.out_proj(attn_output)
 
-
-        '''
-        print("attn_output : ", attn_output.size())
-        if attn_weights_reshaped is None:
-            print("attn_weights_reshaped : NONE")
-        else:
-            print("attn_weights_reshaped : ", attn_weights_reshaped.size())
-        if past_key_value is None:
-            print("past_key_value :  NOne")
-        else :
-            print("past_key_value : ", past_key_value.size())
-        '''
         return attn_output, attn_weights_reshaped, past_key_value
 
 class MultiheadAttention(nn.Module):
@@ -425,7 +414,7 @@ class Decoder(nn.Module):
         if input_shape[-1] > 1:
             combined_attention_mask = _make_causal_mask(
                 input_shape, inputs_embeds.dtype, past_key_values_length=past_key_values_length
-            ).cuda(device=torch.device(f"cuda:{torch.cuda.current_device()}"), non_blocking=True) # non_blocking=False -> cuda error
+            ).cuda(device=torch.device(f"cuda:{torch.cuda.current_device()}") ) # , non_blocking=False) 
 
         if attention_mask is not None:
             # [bsz, seq_len] -> [bsz, 1, tgt_seq_len, src_seq_len]
@@ -628,8 +617,8 @@ class ATransformer(nn.Module):
                                         )
                                         # output_attention = None
             # encoder[0] : encoder_hidden_state(last)
-            # encoder[1] : encoder_hidden_state(all) = NONE
-            # encoder[2] : attentions= NONE
+            # encoder[1] : encoder_hidden_state(all) 
+            # encoder[2] : attentions 
         
         # decoder outputs consists of (dec_features, past_key_value, dec_hidden, dec_attn)
         morph_outputs = self.morph_decoder(
@@ -639,9 +628,9 @@ class ATransformer(nn.Module):
             encoder_attention_mask=attention_mask,
             past_key_values=morph_past_key_values,
             inputs_embeds=morph_embeds,
-            use_cache=True,      #use_cache,                        #BOOL?
-            output_attentions=True,     #output_attentions,        #BOOL?
-            output_hidden_states=True       #output_hidden_states   #BOOL?
+            use_cache=use_cache,      #use_cache,                        #BOOL?
+            output_attentions=output_attentions,     #output_attentions,        #BOOL?
+            output_hidden_states=output_hidden_states       #output_hidden_states   #BOOL?
         )
         tag_outputs = self.tag_decoder(
             input_ids=tag_input_ids,
@@ -650,10 +639,11 @@ class ATransformer(nn.Module):
             encoder_attention_mask=attention_mask,
             past_key_values=tag_past_key_values,
             inputs_embeds=tag_embeds,
-            use_cache=True,         #use_cache,                        # BOOL?
-            output_attentions=True,     #output_attentions,        # BOOL?
-            output_hidden_states=True       #output_hidden_states   # BOOL?
+            use_cache=use_cache,         #use_cache,                        # BOOL?
+            output_attentions=output_attentions,     #output_attentions,        # BOOL?
+            output_hidden_states=output_hidden_states       #output_hidden_states   # BOOL?
         )
+        
         morph_logits = self.morph_projection(morph_outputs[0])
         tag_logits = self.tag_projection(tag_outputs[0])
 

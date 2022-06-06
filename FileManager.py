@@ -68,6 +68,7 @@ class FileManager():
     
     def prob_write(self):
         pass
+    
     def BI_to_tag(self, BI):
         bi = BI  
         result_tag = []
@@ -92,63 +93,46 @@ class FileManager():
                 result_tag.append("/" + bi[i])
         return result_tag
 
-    def BI_to_tag_v2(self, BI:list):
-        BI_len = len(BI)
-        bi = BI[:]
+    def No_BI(self, tag):
+        original_tag = tag[:]
         result_tag = []
 
-        cur_tag = bi.pop(0)
-        comp_tag = ""
-        for _ in range(len(bi) ):
-            comp_tag = bi.pop(0)
+        cur_tag = tag.pop(0)
 
-            if "I-" in comp_tag:
+        # cur_tag = <pad>
+        # 200
+        for comp_tag in tag:
+            if cur_tag == comp_tag:
                 result_tag.append("")
-            elif "B-" in comp_tag:
-                cur_tag = cur_tag.replace("B-", "")
-                cur_tag = cur_tag.replace("I-", "")
+            else : 
                 result_tag.append(cur_tag)
                 cur_tag = comp_tag
-            elif comp_tag == "/O+" or comp_tag == "/O" or comp_tag == "<pad>":
-                cur_tag = cur_tag.replace("B-", "")
-                cur_tag = cur_tag.replace("I-", "")
-                result_tag.append(cur_tag)
-                cur_tag = ""
-            elif comp_tag == "<unk>":
-                cur_tag = cur_tag.replace("B-", "")
-                cur_tag = cur_tag.replace("I-", "")
-                result_tag.append(cur_tag)
-                cur_tag = "/<unk-tag>"
+        result_tag.append(cur_tag)
 
-        
-        comp_tag = comp_tag.replace("B-", "")
-        comp_tag = comp_tag.replace("I-", "")
-        result_tag.append(comp_tag)
-        if result_tag[-1] == "":
-            result_tag.pop()
-
-        assert BI_len == len(result_tag), f"tag wrong\n{BI}\n{result_tag}\n{BI_len}   {len(result_tag)}"
-
+        for i in range(len(result_tag)):
+            if result_tag[i] == "/O+" or result_tag[i] =="/O":
+                result_tag[i]=""
+                    
+        assert len(result_tag) == len(original_tag), f"result != tag \n{result_tag}\n{original_tag}\n{len(result_tag), len(original_tag)}"
         return result_tag
 
-           
 
-    def force_BI_to_tag(self, BI : list):
-        bi = BI
+    def force_BI_to_tag(self, BI : list) :
         result_tag = []
-
+        bi = BI[:]
+        
         cur_tag = bi.pop(0)
-        for _ in range(len(bi) - 1):
-            comp_tag = bi.pop(0)
-                
+        for comp_tag in bi:
             if "I-" in comp_tag:
                 result_tag.append("")
-            else :
-                cur_tag = cur_tag.replace("B-", "")
-                if cur_tag == "/O+" or cur_tag =="/O":
-                    result_tag.append("")
-                else :
-                    result_tag.append(cur_tag)
+            else:
+                result_tag.append(cur_tag.replace("B-", ""))
                 cur_tag = comp_tag
+        result_tag.append(cur_tag.replace("B-", ""))
 
+        for i in range(len(result_tag)):
+            if result_tag[i] == "/O+" or result_tag[i] == "/O":
+                result_tag[i] = ""
+        
+        assert len(result_tag) == len(BI), f"len difference\n{result_tag}\n{BI}"
         return result_tag

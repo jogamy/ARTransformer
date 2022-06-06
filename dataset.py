@@ -11,6 +11,7 @@ from mytokenizer import MyTokenizer
 from splitter_train import split
 from at_base import shift_tokens_right
 
+
 @dataclass
 class DataCollatorForSeq2Seq:
     src_tok : MyTokenizer
@@ -30,13 +31,15 @@ class DataCollatorForSeq2Seq:
         if morph_labels is not None and tag_labels is not None:
             # if [a,b,c] comes,
             for feature in features:
-                feature["morph_labels"] = feature["morph_labels"] + self.morph_tok.index("<eos>")
-                feature["tag_labels"] = feature["tag_labels"] + self.tag_tok.index("<eos>")
+                feature["morph_labels"] = np.concatenate([feature["morph_labels"], [self.morph_tok.index("<eos>") ]])
+                feature["tag_labels"] = np.concatenate([feature["tag_labels"], [self.tag_tok.index("<eos>")]])
                 # [a, b, c, <eos>]
                 remainder = [self.label_pad_token_id] * (self.max_len - len(feature["morph_labels"]))
+                morph_len = len(feature["morph_labels"])
                 assert (self.max_len - len(feature["morph_labels"])) == (self.max_len - len(feature["tag_labels"]))
+                assert (len(feature["morph_labels"])) <= self.max_len, f"max_len wrong : {morph_len}"
                 feature["morph_labels"] = np.concatenate([feature["morph_labels"], remainder])
-                feature["tag_labels"] = np.concatenate([feature["tag_labels"], remainder])
+                feature["tag_labels"] = np.concatenate([feature["tag_labels"], remainder])                
                 # [a,b,c,<eos> , -100, -100]
 
         # prepare input_ids 
@@ -55,11 +58,13 @@ class DataCollatorForSeq2Seq:
         # list of dictionary to dictionary
         new_dict = {}
         for key in features[0].keys():
-            nps = [feature[key] for feature in features]
-            if key == "attention_mask":
-                new_dict[key] = torch.FloatTensor(np.stack(nps).reshape(batch_size, -1))
-            else :
-                new_dict[key] = torch.LongTensor(np.stack(nps).reshape(batch_size, -1))
+            nps = [feature[key] for feature in features]                
+            new_dict[key] = torch.LongTensor(np.stack(nps).reshape(batch_size, -1))
+            
+            # if key == "attention_mask":
+            #     new_dict[key] = torch.FloatTensor(np.stack(nps).reshape(batch_size, -1))
+            # else :
+            #     new_dict[key] = torch.LongTensor(np.stack(nps).reshape(batch_size, -1))
             
         features = new_dict
 
@@ -94,6 +99,8 @@ class DataCollatorForSeq2Seq:
         
         
         '''
+        
+
 
         return features
                   
@@ -121,7 +128,7 @@ class KMADataset(Dataset):
 
         for src, morph, tag in zip(src_f, morph_f, tag_f):
             # split sentence which has over length.
-            src_bufs, morph_bufs, tag_bufs = split(src.strip(), morph.strip(), tag.strip())
+            src_bufs, morph_bufs, tag_bufs = split(src.strip(), morph.strip(), tag.strip(), self.max_len)
 
             for src_buf, morph_buf, tag_buf in zip(src_bufs, morph_bufs, tag_bufs):
                 srcs.append(src_buf)
@@ -133,7 +140,7 @@ class KMADataset(Dataset):
         src_input_ids = self.src_tok.encode(list(self.srcs[index]))
         morph_labels = self.morph_tok.encode(list(self.morphs[index]))
         tag_labels = self.tag_tok.encode(self.tags[index].split(" "))
-
+        
         return {'input_ids': np.array(src_input_ids, dtype=np.int_),
                 'morph_labels': np.array(morph_labels, dtype=np.int_),
                 'tag_labels': np.array(tag_labels, dtype=np.int_)}

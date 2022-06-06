@@ -1,6 +1,5 @@
 from typing import Dict
 
-
 class MyTokenizer:
     def __init__(
         self,

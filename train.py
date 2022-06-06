@@ -3,7 +3,6 @@ import logging
 import os
 import numpy as np
 from tqdm import tqdm
-import math
 
 import pytorch_lightning as pl
 import torch

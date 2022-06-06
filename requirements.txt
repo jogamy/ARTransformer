@@ -1,4 +1,0 @@
-torch==1.7.1+cu110 -f https://download.pytorch.org/whl/torch_stable.html
-pytorch-lightning==1.2.10
-transformers==4.14.1
-torchtext==0.8.0

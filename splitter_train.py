@@ -136,7 +136,7 @@ def split(src : str, morph : str, tag : str, max_len = 200):
     morph_spl = []
     tag_spl = []
 
-    if len(src) <= max_len and len(morph) <= max_len :
+    if len(src) < max_len and len(morph) < max_len :
         src_spl.append(src)
         morph_spl.append(morph)
         tag_spl.append(tag)
@@ -148,7 +148,7 @@ def split(src : str, morph : str, tag : str, max_len = 200):
             morph_cur = morph_bufs.pop(0)
             tag_cur = tag_bufs.pop(0)
 
-            if len(src_cur) <= max_len and len(morph_cur) <= max_len:
+            if len(src_cur) < max_len and len(morph_cur) < max_len:
                 src_bufs.append(src_cur)
                 morph_bufs.append(morph_cur)
                 tag_bufs.append(tag_cur)
@@ -164,7 +164,7 @@ def split(src : str, morph : str, tag : str, max_len = 200):
             morph_cur = morph_bufs.pop(0)
             tag_cur = tag_bufs.pop(0)
 
-            if len(src_cur) <= max_len and len(morph_cur) <= max_len:
+            if len(src_cur) < max_len and len(morph_cur) < max_len:
                 src_bufs.append(src_cur)
                 morph_bufs.append(morph_cur)
                 tag_bufs.append(tag_cur)
@@ -180,7 +180,7 @@ def split(src : str, morph : str, tag : str, max_len = 200):
             morph_cur = morph_bufs.pop(0)
             tag_cur = tag_bufs.pop(0)
 
-            if len(src_cur) <= max_len and len(morph_cur) <= max_len:
+            if len(src_cur) < max_len and len(morph_cur) < max_len:
                 src_bufs.append(src_cur)
                 morph_bufs.append(morph_cur)
                 tag_bufs.append(tag_cur)
@@ -196,7 +196,7 @@ def split(src : str, morph : str, tag : str, max_len = 200):
             morph_cur = morph_bufs.pop(0)
             tag_cur = tag_bufs.pop(0)
 
-            if len(src_cur) <= max_len and len(morph_cur) <= max_len:
+            if len(src_cur) < max_len and len(morph_cur) < max_len:
                 src_bufs.append(src_cur)
                 morph_bufs.append(morph_cur)
                 tag_bufs.append(tag_cur)
@@ -212,7 +212,7 @@ def split(src : str, morph : str, tag : str, max_len = 200):
             morph_cur = morph_bufs.pop(0)
             tag_cur = tag_bufs.pop(0)
 
-            if len(src_cur) <= max_len and len(morph_cur) <= max_len:
+            if len(src_cur) < max_len and len(morph_cur) < max_len:
                 src_bufs.append(src_cur)
                 morph_bufs.append(morph_cur)
                 tag_bufs.append(tag_cur)
@@ -229,7 +229,7 @@ def split(src : str, morph : str, tag : str, max_len = 200):
             morph_cur = morph_bufs.pop(0)
             tag_cur = tag_bufs.pop(0)
 
-            if len(src_cur) <= max_len and len(morph_cur) <= max_len:
+            if len(src_cur) < max_len and len(morph_cur) < max_len:
                 src_bufs.append(src_cur)
                 morph_bufs.append(morph_cur)
                 tag_bufs.append(tag_cur)
@@ -242,28 +242,7 @@ def split(src : str, morph : str, tag : str, max_len = 200):
 
         
         for src_buf, morph_buf, tag_buf in zip(src_bufs, morph_bufs, tag_bufs):
-            assert len(src_buf) <= max_len and len(morph_buf) <= max_len, f"not splitted"
+            assert len(src_buf) < max_len and len(morph_buf) < max_len, f"not splitted"
 
-            '''
-            #strip right
-            if src_buf[-1] == " " and morph_buf[-1] == " " and tag_buf.split(" ")[-1] == "/O":
-                src_buf = src_buf[:-1]
-                morph_buf = morph_buf[:-1]
-                tag_buf = tag_buf.split(" ")
-                tag_buf = " ".join(tag_buf[:-1])
-            #strip left
-            if src_buf[0] == " " and morph_buf[0] == " " and tag_buf.split(" ")[0] == "/O":
-                src_buf = src_buf[1:]
-                morph_buf = morph_buf[1:]
-                tag_buf = tag_buf.split(" ")
-                tag_buf = " ".join(tag_buf[1:])
-            assert len(morph_buf) == len(tag_buf.split(" ")), f"strip wrong"
-            src_spl.append(src_buf)
-            morph_spl.append(morph_buf)
-            tag_spl.append(tag_buf)
-            '''
 
     return src_spl, morph_spl, tag_spl
-
-
-    
